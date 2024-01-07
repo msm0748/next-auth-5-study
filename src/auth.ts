@@ -14,4 +14,5 @@ export const {
       clientSecret: process.env.AUTH_KAKAO_CLIENT_SECRET!,
     }),
   ],
+  secret: process.env.AUTH_SECRET,
 });
