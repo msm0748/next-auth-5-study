@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { getCookie, setCookie } from 'cookies-next';
-import { cookies } from 'next/headers';
 
 const baseURL = process.env.NEXT_PUBLIC_API_URI;
 const isServer = typeof window === 'undefined';
@@ -9,24 +8,33 @@ export const axiosInstance = axios.create({
   baseURL,
 });
 
-function getRefreshToken() {
-  return isServer
-    ? cookies().get('refreshToken')?.value
-    : getCookie('refreshToken');
+async function getRefreshToken() {
+  if (isServer) {
+    const { cookies } = await import('next/headers');
+    return cookies().get('refreshToken')?.value;
+  } else {
+    return getCookie('refreshToken');
+  }
 }
-function getAccessToken() {
-  return isServer
-    ? cookies().get('accessToken')?.value
-    : getCookie('accessToken');
+async function getAccessToken() {
+  if (isServer) {
+    const { cookies } = await import('next/headers');
+    return cookies().get('accessToken')?.value;
+  } else {
+    return getCookie('accessToken');
+  }
 }
-function updateAccessToken(token: string) {
-  return isServer
-    ? cookies().set('accessToken', token)
-    : setCookie('accessToken', token);
+async function updateAccessToken(token: string) {
+  if (isServer) {
+    const { cookies } = await import('next/headers');
+    return cookies().set('accessToken', token);
+  } else {
+    return setCookie('accessToken', token);
+  }
 }
 
 async function refreshAccessToken() {
-  const refreshToken = getRefreshToken();
+  const refreshToken = await getRefreshToken();
   try {
     const response = await axiosInstance.post('/auth/refresh', {
       refreshToken,
@@ -42,7 +50,7 @@ async function refreshAccessToken() {
 
 axiosInstance.interceptors.request.use(
   async function (config) {
-    const accessToken = getAccessToken();
+    const accessToken = await getAccessToken();
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
