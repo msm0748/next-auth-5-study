@@ -34,3 +34,5 @@ bun dev
 ## 블로그 참고
 
 1. [카카오 로그인 구현](https://msm1307.tistory.com/151)
+2. [데이터베이스에 유저 정보 추가](https://msm1307.tistory.com/152)
+3. [next-auth session 커스텀](https://msm1307.tistory.com/153)
